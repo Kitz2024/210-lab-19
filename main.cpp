@@ -1,6 +1,13 @@
-//Kit Pollinger
-// 210 - Lab - 19 | Abstract and Automate lab 18
+// Kit Pollinger
+//  210 - Lab - 19 | Abstract and Automate lab 18
 
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <cstdlib> // For rand() and srand()
+#include <ctime>   // Time()
+using namespace std;
 
 #include <iostream>
 #include <string>
@@ -13,38 +20,44 @@ struct Node
     Node *next;
 };
 
-Node* head = nullptr;
-Node* tail = nullptr;
+Node *head = nullptr;
+Node *tail = nullptr;
 
 void addNodeToTail(double ratings, string comments)
 {
-    Node* newNode=new Node;
+    Node *newNode = new Node;
     newNode->ratings = ratings;
     newNode->comments = comments;
     newNode->next = nullptr;
 
-    if (tail == nullptr) {
+    if (tail == nullptr)
+    {
         head = tail = newNode;
-    }else {
+    }
+    else
+    {
         tail->next = newNode;
         tail = newNode;
     }
 }
 
-void addNodeToHead(double ratings, string comments){
-    Node* newNode = new Node;
+void addNodeToHead(double ratings, string comments)
+{
+    Node *newNode = new Node;
     newNode->ratings = ratings;
     newNode->comments = comments;
-    newNode->next = head; 
+    newNode->next = head;
     head = newNode;
 }
 
-void printReview(){
-    Node* current = head;
+void printReview()
+{
+    Node *current = head;
     int count = 0;
     double totalRatings = 0.0;
 
-    while (current != nullptr) {
+    while (current != nullptr)
+    {
         cout << "> Review #" << ++count << ": " << current->ratings << ": " << current->comments << endl;
         totalRatings += current->ratings;
         current = current->next;
@@ -64,16 +77,20 @@ int main()
     cout << "[2] New nodes are added at the tail of the linked list\n";
     cin >> userChoice;
 
-    for (char nextReview = 'y'; nextReview == 'y' || nextReview == 'Y';) {
+    for (char nextReview = 'y'; nextReview == 'y' || nextReview == 'Y';)
+    {
         cout << "Enter review rating 0-5: ";
         cin >> ratings;
         cout << "Enter review comments: ";
         cin.ignore();
-        getline (cin, comments);
+        getline(cin, comments);
 
-        if (userChoice == 1){
+        if (userChoice == 1)
+        {
             addNodeToHead(ratings, comments);
-        }else {
+        }
+        else
+        {
             addNodeToTail(ratings, comments);
         }
 
@@ -83,8 +100,6 @@ int main()
 
     cout << "Outputting all reviews:" << endl;
     printReview();
-
-
 
     return 0;
 }
