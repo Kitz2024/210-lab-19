@@ -1,105 +1,69 @@
-// Kit Pollinger
-//  210 - Lab - 19 | Abstract and Automate lab 18
-
 #include <iostream>
-#include <string>
 #include <fstream>
-#include <vector>
-#include <cstdlib> // For rand() and srand()
-#include <ctime>   // Time()
-using namespace std;
-
-#include <iostream>
 #include <string>
+#include <vector>
+#include <ctime>
+
 using namespace std;
 
-struct Node
-{
-    double ratings;
-    string comments;
-    Node *next;
+struct Review {
+    double rating;
+    string comment;
 };
 
-Node *head = nullptr;
-Node *tail = nullptr;
-
-void addNodeToTail(double ratings, string comments)
-{
-    Node *newNode = new Node;
-    newNode->ratings = ratings;
-    newNode->comments = comments;
-    newNode->next = nullptr;
-
-    if (tail == nullptr)
-    {
-        head = tail = newNode;
+class Movie {
+public:
+    Movie(const string& title, const string& reviewFile = "C:/Lab210/210lab19Review.txt") : title(title), reviewFile(reviewFile) {
+        loadReviews();
     }
-    else
-    {
-        tail->next = newNode;
-        tail = newNode;
-    }
-}
 
-void addNodeToHead(double ratings, string comments)
-{
-    Node *newNode = new Node;
-    newNode->ratings = ratings;
-    newNode->comments = comments;
-    newNode->next = head;
-    head = newNode;
-}
-
-void printReview()
-{
-    Node *current = head;
-    int count = 0;
-    double totalRatings = 0.0;
-
-    while (current != nullptr)
-    {
-        cout << "> Review #" << ++count << ": " << current->ratings << ": " << current->comments << endl;
-        totalRatings += current->ratings;
-        current = current->next;
-    }
-    double averageRatings = totalRatings / count;
-    cout << " > Average: " << averageRatings << endl;
-}
-
-int main()
-{
-    int userChoice;
-    double ratings;
-    string comments;
-
-    cout << "Which linked list method should we use?" << endl;
-    cout << "[1] New nodes are added at the head of the linked list\n";
-    cout << "[2] New nodes are added at the tail of the linked list\n";
-    cin >> userChoice;
-
-    for (char nextReview = 'y'; nextReview == 'y' || nextReview == 'Y';)
-    {
-        cout << "Enter review rating 0-5: ";
-        cin >> ratings;
-        cout << "Enter review comments: ";
-        cin.ignore();
-        getline(cin, comments);
-
-        if (userChoice == 1)
-        {
-            addNodeToHead(ratings, comments);
+    void printReviews() const {
+        cout << "Movie: " << title << endl;
+        for (const Review& review : reviews) {
+            cout << "Rating: " << review.rating << endl;
+            cout << "Comment: " << review.comment << endl;
         }
-        else
-        {
-            addNodeToTail(ratings, comments);
+    }
+    
+    void loadReviews() {
+        ifstream infile(reviewFile);
+        if (!infile) {
+            cout << "Error opening review file: " << reviewFile << endl;
+            return;
         }
 
-        cout << "Enter another review? Y/N: ";
-        cin >> nextReview;
+        srand(time(nullptr));
+        string line;
+        while (getline(infile, line)) {
+            if (line.empty()) {
+                continue;
+            }
+            Review review;
+            review.rating = 1.0 + double(rand() % 41)/ 10.0;
+            review.comment = line;
+            reviews.insert(reviews.begin(), review); // Add to the head
+        }
     }
 
-    cout << "Outputting all reviews:" << endl;
-    printReview();
+private:
+    string title;
+    string reviewFile;
+    vector<Review> reviews;
+};
+
+int main() {
+    vector<Movie> movies = {
+        {"Avengers: End Game", "C:/Lab210/210lab19Review.txt"},
+        {"The Wizard of OZ", "C:/Lab210/210lab19Review.txt"},
+        {"Studio Ghibli: My Neighbor Totoro", "C:/Lab210/210lab19Review.txt"},
+        {"Fareinheit", "C:/Lab210/210lab19Review.txt"}
+
+    };
+
+    for (const Movie& movie : movies) {
+        movie.printReviews();
+        cout << endl;
+    }
 
     return 0;
 }
